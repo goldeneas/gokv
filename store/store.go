@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"errors"
@@ -40,7 +40,7 @@ func (s *Store) Get(key string) (string, error) {
 		s.mtx.Unlock()
 		s.mtx.RLock()
 
-		return "", errors.New("Item not found or expired")
+		return "", errors.New("item not found or expired")
 	}
 
 	return it.value, nil
@@ -52,7 +52,7 @@ func (s *Store) Delete(key string) error {
 
 	_, exists := s.data[key]
 	if !exists {
-		return errors.New("No entry found with key")
+		return errors.New("no entry found with key")
 	}
 
 	delete(s.data, key)
