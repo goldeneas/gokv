@@ -8,11 +8,11 @@ import (
 
 type Store struct {
 	data map[string]item
-	mtx sync.RWMutex
+	mtx  sync.RWMutex
 }
 
 type item struct {
-	value string
+	value     string
 	expiresAt time.Time
 }
 
@@ -21,7 +21,7 @@ func (s *Store) Put(key string, value string, ttl int) {
 	defer s.mtx.Unlock()
 
 	item := item{
-		value: value,
+		value:     value,
 		expiresAt: time.Now().Add(time.Duration(ttl) * time.Second),
 	}
 

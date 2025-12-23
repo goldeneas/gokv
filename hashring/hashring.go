@@ -12,9 +12,9 @@ import (
 
 var (
 	ErrNoConnectedNodes = errors.New("no connected nodes available")
-	ErrNodeExists = errors.New("node already exists")
-	ErrNodeNotFound = errors.New("node not found")
-	ErrInHashingKey = errors.New("error in hashing the key")
+	ErrNodeExists       = errors.New("node already exists")
+	ErrNodeNotFound     = errors.New("node not found")
+	ErrInHashingKey     = errors.New("error in hashing the key")
 )
 
 type Node interface {
@@ -23,42 +23,42 @@ type Node interface {
 
 type config struct {
 	HashFunction func() hash.Hash64
-	EnableLogs bool
+	EnableLogs   bool
 }
 
 type ConfigFn func(*config)
 
 func SetHashFunction(f func() hash.Hash64) ConfigFn {
-	return func (c *config) {
+	return func(c *config) {
 		c.HashFunction = f
 	}
 }
 
 func SetEnableLogs(enabled bool) ConfigFn {
-	return func (c *config) {
+	return func(c *config) {
 		c.EnableLogs = enabled
 	}
 }
 
 type HashRing struct {
-	mtx sync.RWMutex
-	config config
-	nodes sync.Map
+	mtx               sync.RWMutex
+	config            config
+	nodes             sync.Map
 	sortedKeysOfNodes []uint64
 }
 
 func NewHashRing(opts ...ConfigFn) *HashRing {
 	config := config{
 		HashFunction: fnv.New64a,
-		EnableLogs: false,
+		EnableLogs:   false,
 	}
 
 	for _, opt := range opts {
 		opt(&config)
 	}
 
-	return &HashRing {
-		config: config,
+	return &HashRing{
+		config:            config,
 		sortedKeysOfNodes: make([]uint64, 0),
 	}
 }
@@ -92,11 +92,11 @@ func (h *HashRing) AddNode(node Node) error {
 	return nil
 }
 
-func (h* HashRing) generateHash(key string) (uint64, error) {
+func (h *HashRing) generateHash(key string) (uint64, error) {
 	hash := h.config.HashFunction()
 	if _, err := hash.Write([]byte(key)); err != nil {
 		return 0, err
-	} 
+	}
 
 	return hash.Sum64(), nil
 }
