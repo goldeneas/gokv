@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+var (
+	ErrItemNotFound = errors.New("item not found or expired")
+)
+
 type Store struct {
 	data map[string]item
 	mtx  sync.RWMutex
@@ -14,6 +18,12 @@ type Store struct {
 type item struct {
 	value     string
 	expiresAt time.Time
+}
+
+func NewStore() *Store {
+	return &Store{
+		data: make(map[string]item),
+	}
 }
 
 func (s *Store) Put(key string, value string, ttl int) {
@@ -40,7 +50,7 @@ func (s *Store) Get(key string) (string, error) {
 		s.mtx.Unlock()
 		s.mtx.RLock()
 
-		return "", errors.New("item not found or expired")
+		return "", ErrItemNotFound
 	}
 
 	return it.value, nil
@@ -52,7 +62,7 @@ func (s *Store) Delete(key string) error {
 
 	_, exists := s.data[key]
 	if !exists {
-		return errors.New("no entry found with key")
+		return ErrItemNotFound
 	}
 
 	delete(s.data, key)
