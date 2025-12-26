@@ -36,8 +36,8 @@ func main() {
 	cluster.Add(nodeMontoro)
 	cluster.Add(nodeSalerno)
 
-	cluster.Put("test", "nicola")
-	cluster.Put("picarella", "10")
+	cluster.Put("test", "nicola", 60)
+	cluster.Put("picarella", "10", 60)
 
 	value, err := cluster.Get("test")
 	if err != nil {
