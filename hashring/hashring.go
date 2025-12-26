@@ -137,7 +137,7 @@ func (h *HashRing) Remove(key string) error {
 		return err
 	}
 
-	h.sortedKeysOfNodes = append(h.sortedKeysOfNodes[:index], h.sortedKeysOfNodes[:index+1]...)
+	h.sortedKeysOfNodes = append(h.sortedKeysOfNodes[:index], h.sortedKeysOfNodes[index+1:]...)
 
 	if h.config.EnableLogs {
 		log.Printf("removed node with key %s (hash: %d)", key, hash)
