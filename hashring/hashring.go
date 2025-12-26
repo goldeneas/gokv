@@ -18,10 +18,6 @@ var (
 	ErrInHashingKey     = errors.New("error in hashing the key")
 )
 
-type Node interface {
-	Identifier() string
-}
-
 type config struct {
 	HashFunction func() hash.Hash64
 	EnableLogs   bool
@@ -110,7 +106,7 @@ func (h *HashRing) Get(key string) (Node, error) {
 	nodeHash := h.sortedKeysOfNodes[index]
 	if node, ok := h.nodes.Load(nodeHash); ok {
 		if h.config.EnableLogs {
-			log.Printf("Key %s (hash: %d) mapped to node (hash: %d)", key, hash, nodeHash)
+			log.Printf("key %s (hash: %d) mapped to node (hash: %d)", key, hash, nodeHash)
 		}
 
 		return node.(Node), nil
@@ -155,8 +151,7 @@ func (h *HashRing) search(hash uint64) (int, error) {
 		return h.sortedKeysOfNodes[i] >= hash
 	})
 
-	// wrap around. if no key is found that respects the filter,
-	// index where the hash would be inserted
+	// wrap around
 	if index == len(h.sortedKeysOfNodes) {
 		index = 0
 	}

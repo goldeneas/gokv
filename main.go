@@ -1,17 +1,26 @@
-package gokv
+package main
 
 import (
-	"github.com/goldeneas/gokv/hashring"
+	"log"
+
+	"github.com/goldeneas/gokv/cluster"
+	"github.com/goldeneas/gokv/store"
 )
 
 type ConcreteNode struct {
-	id string
+	id    string
+	store store.Store
 }
 
 func NewConcreteNode(id string) *ConcreteNode {
 	return &ConcreteNode{
-		id: id,
+		id:    id,
+		store: store.NewMapStore(),
 	}
+}
+
+func (c *ConcreteNode) Store() store.Store {
+	return c.store
 }
 
 func (c *ConcreteNode) Identifier() string {
@@ -19,8 +28,21 @@ func (c *ConcreteNode) Identifier() string {
 }
 
 func main() {
-	hr := hashring.NewHashRing()
-	n1 := NewConcreteNode("TESTID1")
+	cluster := cluster.NewCluster()
 
-	hr.Add(n1)
+	nodeMontoro := NewConcreteNode("montoro.com")
+	nodeSalerno := NewConcreteNode("salerno.com")
+
+	cluster.Add(nodeMontoro)
+	cluster.Add(nodeSalerno)
+
+	cluster.Put("test", "nicola")
+	cluster.Put("picarella", "10")
+
+	value, err := cluster.Get("test")
+	if err != nil {
+		log.Printf("got err %s", err)
+	} else {
+		log.Printf("got value %s", value)
+	}
 }

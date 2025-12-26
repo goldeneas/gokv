@@ -7,7 +7,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	store := NewStore()
+	store := NewMapStore()
 
 	var putValues = []struct {
 		key   string
@@ -44,7 +44,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	store := NewStore()
+	store := NewMapStore()
 
 	var putValues = []struct {
 		key   string
