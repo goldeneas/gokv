@@ -4,20 +4,28 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/goldeneas/gokv/store"
 )
 
 type ConcreteNode struct {
-	id string
+	id    string
+	store *store.MapStore
 }
 
 func NewConcreteNode(id string) *ConcreteNode {
 	return &ConcreteNode{
-		id: id,
+		id:    id,
+		store: store.NewMapStore(),
 	}
 }
 
 func (c *ConcreteNode) Identifier() string {
 	return c.id
+}
+
+func (c *ConcreteNode) Store() store.Store {
+	return c.store
 }
 
 func TestAdd(t *testing.T) {
